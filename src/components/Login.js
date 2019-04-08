@@ -5,8 +5,8 @@ class Login extends Component {
     return (
       <div className="login">
         <div className="container">
-          <a href="#" className="login-logo">
-            <img src="/images/logo.png" alt="logo" />
+          <a href="./login" className="login-logo">
+            <img src="/images/logo.svg" alt="logo" />
           </a>
           <div className="card">
             <div className="card-body">
