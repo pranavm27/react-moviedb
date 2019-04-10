@@ -9,31 +9,69 @@ class Home extends Component {
     // https://api.themoviedb.org/3/movie/550?api_key=03479344506d20d9da722cf3d347f8ef
 
     state = {
-        title : "The Wolf of Wall Street",
+        title : "",
         poster : "",
         description : "",
+        results : ''
     }
 
-    getMovie = async (name) => {
+    getMovieByName = async (name) => {
         const base_url = 'https://api.themoviedb.org/3/search/movie';
         const api_key = '03479344506d20d9da722cf3d347f8ef';
         const movie = name;
-        const movieDetails = await axios.get(`${ base_url }?api_key=${ api_key }&query=${ movie }`);
-        
-        if(movieDetails.data.results[0]) {
-            this.setState({
-                title : movieDetails.data.results[0].original_title,
-                poster : movieDetails.data.results[0].poster_path,
-                description : movieDetails.data.results[0].overview
-            });
+        const _url = `${ base_url }?api_key=${ api_key }&query=${ movie }`;
+
+        try {
+            const movieDetails = await axios.get(_url);
+            if(movieDetails.data.results.length === 1) {
+                this.setState({
+                    title : movieDetails.data.results[0].original_title,
+                    poster : movieDetails.data.results[0].poster_path,
+                    description : movieDetails.data.results[0].overview,
+                    results : ""
+                });
+            } else {
+                if(movieDetails.data.results[0]) {
+                    this.setState({
+                        title : movieDetails.data.results[0].original_title,
+                        poster : movieDetails.data.results[0].poster_path,
+                        description : movieDetails.data.results[0].overview,
+                        results : movieDetails.data.results
+                    });
+                }
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
+    getMovieById = async (id) => {
+        const base_url = 'https://api.themoviedb.org/3/movie';
+        const api_key = '03479344506d20d9da722cf3d347f8ef';
+        const movie = id;
+        const _url = `${ base_url }/${ movie }?api_key=${ api_key }&query=${ movie }`;
+
+        try {
+            const movieDetails = await axios.get(_url);
+            this.setState({
+                title : movieDetails.data.original_title,
+                poster : movieDetails.data.poster_path,
+                description : movieDetails.data.overview,
+                results : ""
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        
+        
+    }
+
     handleOnChange = (name) => {
-        this.setState({
-            title : name
-        })
-        this.getMovie(name);
+        this.getMovieByName(name);
+    }
+
+    handleOnClick = (id) => {
+        this.getMovieById(id);
     }
 
     render() {
@@ -43,7 +81,9 @@ class Home extends Component {
                     <div className="col-md-12">
                         <Search 
                             title = { this.state.title }
-                            handleOnChange = { (name) => this.handleOnChange(name) }/>
+                            results = { this.state.results }
+                            handleOnChange = { (name) => this.handleOnChange(name) }
+                            handleOnClick = { (id) => this.handleOnClick(id) }/>
                     </div>
                 </div>
 

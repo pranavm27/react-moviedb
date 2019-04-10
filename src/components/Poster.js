@@ -1,12 +1,14 @@
 import React from "react";
 
 const Poster = (props) => {
+    const { image } = props;
+
     return (
         <div className="container">
             { 
-                props.image && (
+                image && (
                     <img 
-                        src = { `https://image.tmdb.org/t/p/original/${props.image}` } 
+                        src = { `https://image.tmdb.org/t/p/original/${ image }` } 
                         alt = "no poster"
                         className="img-thumbnail"/>
                 )
